@@ -1,23 +1,78 @@
 import styled from "styled-components";
 
+import { useState, useEffect } from 'react';
+import SearchResult from "./components/SearchResult/SearchResult";
+
+export const DATA_URL = "http://localhost:9000";
+
+
+
+
 
 const App = () => {
+
+
+  const [data, setData] = useState(null);
+
+  const [loading, setLoading] = useState(false);
+
+  const [error, setError] = useState(null);
+
+
+
+  useEffect(() => {
+
+    const fetchFoodData = async () => {
+
+      setLoading(true);
+
+      try {
+
+        const response = await fetch(DATA_URL);
+
+        const json = await response.json();
+
+        setData(json);
+        setLoading(false);
+
+      } catch (error) {
+
+        setError("Error fetching data");
+
+      }
+    };
+
+    fetchFoodData();
+  }, []);
+
+
+
+
+  if (error) return <div>{error}</div>
+  if (loading) return <div>Loading...</div>
+
+  // console.log(data);
+
+
+
+
   return <Container>
+
     <HeaderSection>
 
 
-    <div className="toprow">
+      <div className="toprow">
 
-       <div className="logo">
-        <img src="logo.svg" alt="" />
+        <div className="logo">
+          <img src="logo.svg" alt="" />
+        </div>
+
+        <div className="filtersearch">
+          <input type="text" placeholder="Search Food...." />
+        </div>
+
       </div>
 
-      <div className="searchbar">
-        <input type="text" placeholder="Search Food...." />
-      </div>
-
-    </div>
-     
 
       <div className="navbuttons">
         <button>All</button>
@@ -27,11 +82,9 @@ const App = () => {
       </div>
     </HeaderSection>
 
-    <BodySection>
-      <div className="foodsection">
-        <div className="foodcart"></div>
-      </div>
-    </BodySection>
+    <SearchResult data= {data} />
+
+   
   </Container>;
 };
 
@@ -50,6 +103,7 @@ const HeaderSection = styled.section`
   flex-direction: column; /* now rows instead of one line */
   justify-content: center;
   padding: 50px;
+  
 
   .toprow {
     display: flex;
@@ -57,7 +111,7 @@ const HeaderSection = styled.section`
     align-items: center;
   }
 
-  .toprow .searchbar input{
+  .toprow .filtersearch input{
   
   height: 30px;
   width: 200px;
@@ -79,6 +133,7 @@ const HeaderSection = styled.section`
     gap: 10px;
     justify-content: center;
     
+    
   }
 
   .navbuttons button {
@@ -89,18 +144,10 @@ const HeaderSection = styled.section`
     color: white;
     border-radius: 5px;
     cursor: pointer;
+    font-family: 'Poppins', sans-serif;
     
   }
 `;
 
-const BodySection = styled.section`
 
- height: calc(100vh - 140px);
-  background: url("/bg.png") no-repeat center center;
-  background-size: cover;
-  width: 100%;
-
-
-
-`;
 
