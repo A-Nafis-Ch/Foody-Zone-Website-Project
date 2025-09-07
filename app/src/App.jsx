@@ -18,6 +18,10 @@ const App = () => {
 
   const [error, setError] = useState(null);
 
+  const [filterFood, setFilterFood] = useState();
+
+  const [foodTypebtn, setFoodTypebtn] = useState("all");
+
 
 
   useEffect(() => {
@@ -26,13 +30,17 @@ const App = () => {
 
       setLoading(true);
 
+
       try {
+
+
 
         const response = await fetch(DATA_URL);
 
         const json = await response.json();
 
         setData(json);
+        setFilterFood(json);
         setLoading(false);
 
       } catch (error) {
@@ -46,7 +54,49 @@ const App = () => {
   }, []);
 
 
+  const filterHandler = (e) => {
+    const searchItems = e.target.value;
+    // console.log(searchItems);
 
+    if(searchItems === ""){
+      setFilterFood(data);
+    }
+
+    const filterFoodData = data.filter((item) => item.name.toLowerCase().includes(searchItems.toLowerCase()));
+    setFilterFood(filterFoodData);
+  };
+
+  const clickHandlerFoodType = (type) => {
+
+    if(type == "all"){
+      setFilterFood(data);
+      setFoodTypebtn("all");
+      return;
+    }
+
+    const filterFoodData = data.filter((item) => item.type.toLowerCase().includes(type.toLowerCase()));
+    setFilterFood(filterFoodData);
+    setFoodTypebtn(type);
+  };
+
+  const filterBtns = [
+    {
+      name: "All",
+      type: "all"
+    },
+    {
+      name: "Breakfast",
+      type: "breakfast"
+    },
+    {
+      name: "Lunch",
+      type: "lunch"
+    },
+    {
+      name: "Dinner",
+      type: "dinner"
+    },
+  ];
 
   if (error) return <div>{error}</div>
   if (loading) return <div>Loading...</div>
@@ -68,31 +118,34 @@ const App = () => {
         </div>
 
         <div className="filtersearch">
-          <input type="text" placeholder="Search Food...." />
+          <input onChange={filterHandler} type="text" placeholder="Search Food...." />
         </div>
 
       </div>
 
 
       <div className="navbuttons">
-        <button>All</button>
-        <button>Breakfast</button>
-        <button>Lunch</button>
-        <button>Dinner</button>
+
+        {filterBtns.map((value)=> <button key={value.name} onClick={() => clickHandlerFoodType(value.type)}>{value.name}</button> )}
+        
       </div>
     </HeaderSection>
 
-    <SearchResult data= {data} />
+    <SearchResult data={filterFood} />
 
-   
+
   </Container>;
 };
 
 export default App;
 
-const Container = styled.div`
+export const Container = styled.div`
 
-max-width: 100%;
+max-width: 100vw;
+max-height: 100vh;
+overflow-x: hidden;
+overflow-y: hidden; 
+
 `
 
 const HeaderSection = styled.section`
@@ -146,6 +199,15 @@ const HeaderSection = styled.section`
     cursor: pointer;
     font-family: 'Poppins', sans-serif;
     
+  }
+
+  @media(0 < width < 600px){
+
+  .toprow{
+  flex-direction: column;
+  }
+
+  
   }
 `;
 

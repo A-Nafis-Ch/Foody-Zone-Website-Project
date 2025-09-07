@@ -1,41 +1,52 @@
 import styled from "styled-components";
 import { DATA_URL } from "../../App";
 
+
 const SearchResult = ({ data }) => {
     return (
         <BodySection>
-            <div className="foodsection">
 
-                {data?.map((items) => {
+            
+                <div className="foodsection">
 
-                    return (
-                        <div key={items.name} className="foodcart">
-                            <div className="foodImage">
-                                <img src={DATA_URL + items.image} alt={items.name} />
-                            </div>
+                
 
-                            <div className="cartItems">
+                    {data?.map((items) => {
 
-                                <div className="foodName">
-                                    <h2>{items.name}</h2>
-                                    <p>{items.text}</p>
+                        return (
+                            <div key={items.name} className="foodcart">
+                                <div className="foodImage">
+                                    <img src={DATA_URL + items.image} alt={items.name} />
                                 </div>
 
-                                <div className="foodPrice">
-                                    <button>${items.price.toFixed(2)}</button>
+                                <div className="cartItems">
+
+                                    <div className="foodName">
+                                        <h2>{items.name}</h2>
+                                        <p>{items.text}</p>
+                                    </div>
+
+                                    <div className="foodPrice">
+                                        <button>${items.price.toFixed(2)}</button>
+                                    </div>
+
                                 </div>
 
-                            </div>
+
+                            </div>);
 
 
-                        </div>);
+                    })
 
+                    
 
-                })
+                    }
 
-                }
+                   
 
-            </div>
+                </div>
+            
+
         </BodySection>
     )
 }
@@ -53,15 +64,11 @@ const BodySection = styled.section`
 
   .foodsection{
   
-    display: flex;
-    flex-wrap: wrap;
-    row-gap: 30px;
-    column-gap: 20px;
-    padding-top: 40px;
-    justify-content: center;
-    align-items: center;
-
-    
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    padding-top: 30px; 
+    gap: 20px;
+    padding: 50px;
     }
 
   .foodcart{
